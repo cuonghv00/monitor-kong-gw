@@ -1,0 +1,180 @@
+deployment:
+  kong:
+    enabled: true
+  serviceAccount:
+    create: true
+    automountServiceAccountToken: false
+  prefixDir:
+    sizeLimit: 256Mi
+  tmpDir:
+    sizeLimit: 1Gi
+env:
+  database: "off"
+  router_flavor: "traditional"
+  nginx_worker_processes: "2"
+  proxy_access_log: /dev/stdout
+  admin_access_log: /dev/stdout
+  admin_gui_access_log: /dev/stdout
+  portal_api_access_log: /dev/stdout
+  proxy_error_log: /dev/stderr
+  admin_error_log: /dev/stderr
+  admin_gui_error_log: /dev/stderr
+  portal_api_error_log: /dev/stderr
+  prefix: /kong_prefix/
+image:
+  repository: kong
+  tag: "3.1"
+  pullPolicy: IfNotPresent
+status:
+  enabled: true
+  http:
+    enabled: true
+    containerPort: 8100
+    parameters: []
+  tls:
+    enabled: false
+    containerPort: 8543
+    parameters: []
+
+clusterCaSecretName: ""
+proxy:
+  enabled: true
+  type: LoadBalancer
+  loadBalancerClass:
+  nameOverride: ""
+  annotations: {}
+  labels:
+    enable-metrics: "true"
+  http:
+    enabled: true
+    servicePort: 80
+    containerPort: 8000
+    parameters: []
+  tls:
+    enabled: true
+    servicePort: 443
+    containerPort: 8443
+    parameters:
+    - http2
+migrations:
+  preUpgrade: true
+  postUpgrade: true
+  annotations:
+    sidecar.istio.io/inject: false
+  jobAnnotations: {}
+  backoffLimit:
+  resources: {}
+dblessConfig:
+  configMap: ""
+  secret: ""
+  config: |
+  # # _format_version: "1.1"
+  # # services:
+  # #   # Example configuration
+  # #   # - name: example.com
+  # #   #   url: http://example.com
+  # #   #   routes:
+  # #   #   - name: example
+  # #   #     paths:
+  # #   #     - "/example"
+  ## Optionally specify any extra sidecar containers to be included in the
+  ## migration jobs
+  ## See https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
+  # sidecarContainers:
+  #   - name: sidecar
+  #     image: sidecar:latest
+
+waitImage:
+  enabled: true
+  pullPolicy: IfNotPresent
+
+readinessProbe:
+  httpGet:
+    path: "/status"
+    port: status
+    scheme: HTTP
+  initialDelaySeconds: 5
+  timeoutSeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+
+livenessProbe:
+  httpGet:
+    path: "/status"
+    port: status
+    scheme: HTTP
+  initialDelaySeconds: 5
+  timeoutSeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+
+lifecycle:
+  preStop:
+    exec:
+      command:
+        - kong
+        - quit
+        - '--wait=15'
+
+terminationGracePeriodSeconds: 30
+tolerations: []
+nodeSelector: {}
+podAnnotations:
+  kuma.io/gateway: enabled
+  traffic.sidecar.istio.io/includeInboundPorts: ""
+podLabels: {}
+replicaCount: 3
+deploymentAnnotations: {}
+serviceMonitor:
+  # Specifies whether ServiceMonitor for Prometheus operator should be created
+  # If you wish to gather metrics from a Kong instance with the proxy disabled (such as a hybrid control plane), see:
+  # https://github.com/Kong/charts/blob/main/charts/kong/README.md#prometheus-operator-integration
+  enabled: false
+  # interval: 10s
+  # Specifies namespace, where ServiceMonitor should be installed
+  # namespace: monitoring
+  # labels:
+  #   foo: bar
+  # targetLabels:
+  #   - foo
+
+  # honorLabels: false
+  # metricRelabelings: []
+
+manager:
+  enabled: true
+  type: NodePort
+  loadBalancerClass:
+  annotations: {}
+  labels: {}
+  http:
+    enabled: true
+    servicePort: 8002
+    containerPort: 8002
+    parameters: []
+
+portal:
+  enabled: true
+  type: NodePort
+  loadBalancerClass:
+  annotations: {}
+  labels: {}
+  http:
+    enabled: true
+    servicePort: 8003
+    containerPort: 8003
+    parameters: []
+
+portalapi:
+  enabled: true
+  type: NodePort
+  loadBalancerClass:
+  annotations: {}
+  labels: {}
+  http:
+    enabled: true
+    servicePort: 8004
+    containerPort: 8004
+    parameters: []
