@@ -13,4 +13,4 @@ spec:
   source:
     repoURL: https://github.com/cuonghv00/monitor-kong-gw.git
     targetRevision: HEAD
-    path: servicemonitor/kube-prometheus-stack
+    path: servicemonitor
