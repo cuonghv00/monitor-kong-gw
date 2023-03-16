@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: monitoring
-  namespace: argocd
+  namespace: argocd-platform
 spec:
   project: default
 
@@ -16,7 +16,7 @@ spec:
     path: /servicemonitor/kube-prometheus-stack
     helm:
       skipCrds: true
-      
+
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
