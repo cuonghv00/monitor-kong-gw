@@ -4,13 +4,19 @@ metadata:
   name: monitoring
   namespace: argocd
 spec:
+  project: default
+
   destination:
     namespace: monitoring
     server: https://kubernetes.default.svc
-  project: default
+  
   source:
-    repoURL: https://prometheus-community.github.io/helm-charts
-    chart: kube-prometheus-stack
-    targetRevision: 45.7.1
+    repoURL: https://github.com/cuonghv00/monitor-kong-gw.git
+    targetRevision: HEAD
+    path: /servicemonitor/kube-prometheus-stack
     helm:
       skipCrds: true
+      
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
