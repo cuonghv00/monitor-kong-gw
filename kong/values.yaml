@@ -460,7 +460,7 @@ dblessConfig:
       url: http://echo.app:31204
       routes:
       - paths:
-        - /
+        - /echo
 
 # -----------------------------------------------------------------------------
 # Ingress Controller parameters
