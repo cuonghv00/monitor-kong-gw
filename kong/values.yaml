@@ -885,8 +885,8 @@ serviceMonitor:
   namespace: gw
   labels:
     release: monitoring
-  targetLabels:
-    - app.kubernetes.io/name: kong
+  # targetLabels:
+  #   - foo
 
   # honorLabels: false
   # metricRelabelings: []
