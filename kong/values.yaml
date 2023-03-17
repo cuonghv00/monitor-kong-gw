@@ -453,14 +453,21 @@ dblessConfig:
   # Or Kong's configuration is managed from an existing Secret (with Key: kong.yml)
   secret: ""
   # Or the configuration is passed in full-text below
-  config: 
-    _format_version: '2.1'
-    services:
-    - name: echoserver
-      url: http://echo.app:31687
+  config: |
+  _format_version: "1.1"
+  services:
+    - name: "echo.app"
+      url: http://echo.app:31204
       routes:
-      - paths:
-        - /
+      - name: echoserver
+        paths:
+        - "/"
+  ## Optionally specify any extra sidecar containers to be included in the
+  ## migration jobs
+  ## See https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
+  # sidecarContainers:
+  #   - name: sidecar
+  #     image: sidecar:latest
 
 # -----------------------------------------------------------------------------
 # Ingress Controller parameters
