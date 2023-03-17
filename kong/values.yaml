@@ -67,22 +67,25 @@ migrations:
 dblessConfig:
   configMap: ""
   secret: ""
-  config: |
-  # # _format_version: "1.1"
-  # # services:
-  # #   # Example configuration
-  # #   # - name: example.com
-  # #   #   url: http://example.com
-  # #   #   routes:
-  # #   #   - name: example
-  # #   #     paths:
-  # #   #     - "/example"
-  ## Optionally specify any extra sidecar containers to be included in the
-  ## migration jobs
-  ## See https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core
-  # sidecarContainers:
-  #   - name: sidecar
-  #     image: sidecar:latest
+  config: 
+    _format_version: '2.1'
+    services:
+    - name: echoserver
+      url: http://echo.app:31687
+      routes:
+      - paths:
+        - /
+
+hostAliases:
+  - ip: "172.19.0.2"
+    hostnames:
+    - "echo.app" 
+  - ip: "172.19.0.3"
+    hostnames:
+    - "echo.app"
+  - ip: "172.19.0.4"
+    hostnames:
+    - "echo.app"
 
 waitImage:
   enabled: true
