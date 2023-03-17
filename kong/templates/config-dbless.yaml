@@ -1,7 +1,6 @@
 {{- if .Values.deployment.kong.enabled }}
 {{- if (and (not .Values.ingressController.enabled) (eq .Values.env.database "off")) }}
-{{- if not (or .Values.dblessConfig.configMap .Values.dblessConfig.secret) }}
-{{- if .Values.dblessConfig.config }}
+{{- if not .Values.dblessConfig.configMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,8 +9,8 @@ metadata:
   labels:
     {{- include "kong.metaLabels" . | nindent 4 }}
 data:
-  kong.yml: | {{- .Values.dblessConfig.config | nindent 4 }}
-{{- end }}
+  kong.yml: |
+{{ .Values.dblessConfig.config | toYaml | indent 4 }}
 {{- end }}
 {{- end }}
 {{- end }}
